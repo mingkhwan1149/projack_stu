@@ -1,0 +1,19 @@
+# docker-compose.yaml
+version: '3.9'
+
+services:
+  projack_stu:
+    container_name: ${CONTAINER_NAME}-container
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: ${DOCKER_REPO_USER}/${IMAGE_NAME}:${IMAGE_VERSION}
+    platform: linux/amd64
+    ports:
+      - "${PORT}:8080"
+    environment:
+      - HOST=${SUPABASE_URL}
+      - LOG_LEVEL=DEBUG
+      - API_SERVER=${SUPABASE_URL}
+    volumes:
+      - ./code:/usr/src/app

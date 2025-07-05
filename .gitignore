@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Env files
+.env
+env.properties
+
+# VS Code settings
+.vscode/
+
+# Docker volumes or temp files (ถ้ามี)
+docker-compose.override.yaml
+
+# Logs
+*.log
