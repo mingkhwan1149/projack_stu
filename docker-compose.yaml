@@ -1,8 +1,13 @@
-# docker-compose.yaml
-version: '3.9'
+version: "3.9"
+
+networks:
+  app_net:
+    external: true
+    driver: bridge
+    
 
 services:
-  projack_stu:
+  stu:
     container_name: ${CONTAINER_NAME}-container
     build:
       context: .
@@ -12,9 +17,39 @@ services:
     ports:
       - "${PORT}:8080"
     environment:
-      - SUPABASE_URL=${SUPABASE_URL}
-      - SUPABASE_KEY=${SUPABASE_KEY}
-      - LOG_LEVEL=DEBUG
-      - API_SERVER=${SUPABASE_URL}
+      - DATABASE_URL=${DATABASE_URL}
+      - POSTGRES_USER=rbac
+      - POSTGRES_PASSWORD=rbacac
+      - POSTGRES_DB=rbac
     volumes:
       - ./code:/usr/src/app
+    networks:
+      - app_net
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=rbac
+      - POSTGRES_PASSWORD=rbacac
+      - POSTGRES_DB=rbac
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "1049:5432"
+    networks:
+      - app_net
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token eyJhIjoiYzhmM2FjYTE5M2M3NjlkOWRiMDdhMGNjOTMxMmU5N2MiLCJ0IjoiMTVkMDYxMWItNWE2YS00Zjk3LWFkYTEtMmUzYjE2M2MzOTNjIiwicyI6IlpXSXdNV0ZtTWpRdFlURmtOUzAwTVRNekxUaGhNRGd0TTJSbU1tTm1OV1U0WmpGaSJ9
+    restart: unless-stopped
+    depends_on:
+      - stu
+    volumes:
+      - ./config.yml:/etc/cloudflared/config.yml
+    networks:
+      - app_net
+
+volumes:
+  postgres_data:
+    driver: local

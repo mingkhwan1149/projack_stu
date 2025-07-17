@@ -1,0 +1,5 @@
+tunnel: 15d0611b-5a6a-4f97-ada1-2e3b163c393c
+ingress:
+  - hostname: test.rbac-activity.com
+    service: http://stu-container-container:8080
+  - service: http_status:404

@@ -2,10 +2,7 @@
 #!/bin/bash
 set -e
 echo "📦 Loading environment variables..."
-export $(grep -v '^#' env.properties | xargs)
-
-echo "💡 ENV loaded:"
-env | grep SUPABASE
+export $(grep -v '^#' .env | xargs)
 
 if [ "$1" = "nolive" ]; then
     echo "🔧 Starting in 'nolive' mode..."
